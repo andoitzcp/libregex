@@ -13,7 +13,7 @@ RELEASE_OBJ_DIR=obj/
 TEST_OBJ_DIR=test/obj/
 TEST_BIN_DIR=test/bin/
 
-RELEASE_SRC= src/regex.c
+RELEASE_SRC= $(shell find src/ -type f -name '*.c')
 RELEASE_OBJ=$(subst src/,obj/,$(RELEASE_SRC:.c=.o))
 
 TESTS_SRC=$(shell find test/src/ -type f -name '*.c')
@@ -21,6 +21,7 @@ TESTS_OBJ=$(subst src/,obj/,$(TESTS_SRC:.c=.o))
 TESTS_BIN=$(subst src/,bin/,$(TESTS_SRC:.c=))
 
 HEADERS = src/libregex.h
+TEST_HEADERS = test/src/utils.h
 RM		= rm -f
 
 # Colors
@@ -62,10 +63,10 @@ $(TEST_BIN_DIR):
 	@[ -d $(TEST_BIN_DIR) ] || mkdir -p $(TEST_BIN_DIR)
 
 # prevent deleting object in rules chain
-#$(TESTS_BIN): $(RELEASE_OBJ) $(TESTS_OBJ) # no descomentar
+#$(TESTS_BIN): $(NAME) $(TESTS_OBJ) # no descomentar
 
 run-tests: $(TESTS_BIN)
-	@./$^ || true
+	@for t in $^; do echo "Running $$t:" & ./$$t; done
 
 clean:
 	@$(RM) -rf $(RELEASE_OBJ)
@@ -81,5 +82,6 @@ fclean: clean
 re: fclean all
 
 .PHONY: all clean fclean re
+#.PRECIOUS:  $(TESTS_OBJ)
 
 # end

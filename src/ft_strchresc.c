@@ -10,14 +10,19 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libregex.h"
+#include <stddef.h>
 
-char	*ft_strchr(const char *s, int c)
+/*
+** Like strchr but escapes cs character
+*/
+char	*ft_strchresc(const char *s, int c, int sc)
 {
 	if (s == NULL)
 		return (NULL);
 	while (*s != '\0')
 	{
+		if (*s == (char)sc && (char)*(s + 1) != '\0')
+			s += 2;
 		if (*s == (char)c)
 			return ((char *)s);
 		s++;

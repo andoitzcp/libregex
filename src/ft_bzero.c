@@ -1,28 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strchr.c                                        :+:      :+:    :+:   */
+/*   ft_bzero.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: acampo-p <acampo-p@student.42urduliz.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/29 16:31:53 by acampo-p          #+#    #+#             */
-/*   Updated: 2022/12/12 10:06:04 by acampo-p         ###   ########.fr       */
+/*   Created: 2022/12/02 13:49:34 by acampo-p          #+#    #+#             */
+/*   Updated: 2022/12/02 19:33:22 by acampo-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libregex.h"
+#include <stddef.h>
 
-char	*ft_strchr(const char *s, int c)
+void	ft_bzero(void *s, size_t n)
 {
-	if (s == NULL)
-		return (NULL);
-	while (*s != '\0')
-	{
-		if (*s == (char)c)
-			return ((char *)s);
-		s++;
-	}
-	if ((char)c == 0)
-		return ((char *)s);
-	return (NULL);
+	char	*cs;
+
+	cs = s;
+	while (n-- > 0)
+		cs[n] = '\0';
 }

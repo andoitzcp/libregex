@@ -1,73 +1,63 @@
 #include "libregex.h"
 
-ssize_t build_re_node(t_re *node, char *s, int type)
+int is_charmatch(t_re *node, char *str)
 {
-    char *p;
-    char *q;
-
-    node->type = type;
-    if (type == T_CHAR)
-        node->c = *s;
-    if (type == T_CHARSET)
-        node->cs = get_charset(s);
-    p = ft_strchr(s, '{');
-    node->minc = get_int_in_brackets(p);
-    if (node->minc == -1)
-        return (-1);
-    p = ft_strchr(p, '}');
-    q = p + 1;
-    node->minc = get_int_in_brackets(q);
-    if (node->minc == -1)
-        return (-1);
-    q = ft_strchr(q, '}');
-    if (q != NULL)
-        return (q - s + 1);
-    if (p != NULL)
-        return (p - s + 1);
-    if (type == T_CHAR)
+    if (node->type == T_CHAR)
+        return (node->c == *str);
+    else if (node->type == T_CHARSET)
+        return (node->cs[(int)*str]);
+    else if (node->type == T_DOT)
         return (1);
-    if (type == T_CHARSET)
-        return (ft_strlen(node->cs) + node->neg + 2);
-
+    else
+        return(-1);
+    return (0);
 }
 
-int parse(t_re *re, char *s)
+int matchstar(t_re *re1, t_re *re2, char *str)
 {
-    t_re *p;
-    char *c;
-    size_t i;
-    size_t len;
-
-    re = malloc(sizeof(t_re) * ft_strlen(s));
-    if (!re)
-        ft_exit(re, "Malloc error");
-    ft_memset((void *)re, '\0', sizeof(t_re) * ft_strlen(s));
-    p = re;
-    i = 0;
-    while (s[i] != '\0')
+    while (1)
     {
-        c = ft_strchr("*?+", s[i]);
-        if (!ft_isascii(s[i]))
-            return(0);
-        else if (s[i] == '\\')
-            len = build_re_node(re + i, s + 1, T_CHAR) + 1;
-        else if (s[i] == '[')
-            len = build_re_node(re + i, s, T_CHARSET);
-        else if (c != NULL)
-            len = build_re_node(re + i, s, *c);
-        else
-            len = build_re_node(re + i, s, T_CHAR);
-        if (len == -1)
-            return (0);
-        i += len;
+        if (matchhere(re2, str))
+            return (1);
+        if (*str == '\0')
+            break ;
+        if (is_charmatch(re1, str) == 0)
+            break ;
+        str++;
     }
-    return (1);
+    return (0);
 }
 
-int match(char *regex_str, char *str)
+int matchhere(t_re *re, char *str)
+{
+    if (re == NULL)
+        return (1);
+    else if (re->next != NULL)
+    {
+        if (re->next->type == T_STAR)
+            return(matchstar(re, re->next->next, str));
+    }
+    if (re->type == T_END)
+        return (*str == '\0');
+    if (*str != '\0' && (is_charmatch(re, str) == 1))
+        return (matchhere(re->next, str + 1));
+    return 0;
+}
+
+int match(t_re **head, char *str)
 {
     t_re *re;
 
-    if (!parse(&re, str))
-        ft_exit(&re, "Invalid regex string!");
+    re = *head;
+    if (re->type == T_BEGIN)
+        return (matchhere(re->next, str));
+    while (1)
+    {
+        if (matchhere(re, str))
+            return (1);
+        if (*str == '\0')
+            break ;
+        str++;
+    }
+    return (0);
 }

@@ -1,0 +1,5 @@
+  /home/andoitzcp/para/areas/42/99-ft_regex/libregex/test/src:
+  -rw-r--r-- 1 andoitzcp andoitzcp 9.5K Sep 13 00:28 build_re_node.c
+  -rw-r--r-- 1 andoitzcp andoitzcp 1.6K Sep 12 20:20 core.c
+  -rw-r--r-- 1 andoitzcp andoitzcp  15K Sep 12 21:26 get_charset.c
+  -rw-r--r-- 1 andoitzcp andoitzcp  162 Sep 12 20:35 utils.h

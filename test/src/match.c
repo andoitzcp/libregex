@@ -106,3 +106,67 @@ Test(match, Case13)
     head = re_new("abc");
     cr_expect(match(head, "01234980abc;lkahjsg79") == 1);
 }
+
+Test(match, Case14)
+{
+    t_re **head;
+
+    head = re_new("abc{3}");
+    cr_expect(match(head, "abcc") == 0);
+}
+
+Test(match, Case15)
+{
+    t_re **head;
+
+    head = re_new("abc{3}");
+    cr_expect(match(head, "abccc") == 1);
+}
+Test(match, Case16)
+{
+    t_re **head;
+
+    head = re_new("abc{3}");
+    cr_expect(match(head, "abcca") == 0);
+}
+
+Test(match, Case17)
+{
+    t_re **head;
+
+    head = re_new("abc{3}a");
+    cr_expect(match(head, "abccca") == 1);
+}
+
+Test(match, Case18)
+{
+    t_re **head;
+
+    head = re_new("abc{3}{5}a");
+    cr_expect(match(head, "abcccca") == 1);
+}
+
+Test(match, Case19)
+{
+    t_re **head;
+
+    head = re_new("abc{3}{5}a");
+    cr_expect(match(head, "abccccca") == 1);
+}
+
+Test(match, Case20)
+{
+    t_re **head;
+
+    head = re_new("abc{3}{5}a");
+    cr_expect(match(head, "abcccccca") == 0);
+}
+
+Test(match, Case21)
+{
+    t_re **head;
+
+    head = re_new("^A  *0[0-9]*\\.[0-9]{1}  *[0-9]{1}{3},[0-9]{1}{3},[0-9]{1}{3}$");
+    cr_expect(match(head, "A     0.87 1,20,2555") == 1);
+
+}
